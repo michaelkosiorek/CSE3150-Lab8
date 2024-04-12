@@ -17,7 +17,7 @@ std::ostream & operator<<(std::ostream & os, std::weak_ptr<T> & p) {
     raw = sp.get();
     }
     return os << raw
-              << "weak_ptr to shared_ptr count: [" << p.use_count() << "]" ;
+              << " weak_ptr to shared_ptr count: [" << p.use_count() << "]" ;
 }
 
 struct LinkedList {

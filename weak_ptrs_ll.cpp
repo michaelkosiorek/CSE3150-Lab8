@@ -30,19 +30,20 @@ void LinkedList::build_node_list(int k) {
 }
 
 void LinkedList::build_copyNodes_weak_ptrs() {
-    vector<CopyNode> copy_nodes(nodeCount);
-    weak_ptr<Node> weak_root(root);
+    vector<CopyNode> copy_nodes;
     CopyNode copy_node_to_add;
-    copy_node_to_add.weak_node_ptr = weak_root;
+    copy_node_to_add.weak_node_ptr = root;
+    //rcout << copy_node_to_add.weak_node_ptr << endl;
     copy_nodes.push_back(copy_node_to_add);
+    //cout << copy_nodes[0].weak_node_ptr << endl;
 
     shared_ptr<Node> current_node = root->next;
     for (int i=1; i < nodeCount; i++) {
-        weak_ptr<Node> weak_root(root);
-        copy_node_to_add.weak_node_ptr = weak_root;
+        copy_node_to_add.weak_node_ptr = root;
         copy_nodes.push_back(copy_node_to_add);
     }
-    copy_node_array = copy_nodes;
+
+    cout << copy_nodes[0].weak_node_ptr << endl;
 }
 
 void LinkedList::delete_node_shared_ptr_list() {
@@ -74,12 +75,17 @@ void LinkedList::print_node_list_shared_ptrs() {
         current_node = current_node->next;
     }
 
+    /*
+    cout << "Root use count: " << root.use_count() << endl;
+    cout << "Root->next use count:" << root->next.use_count() << endl;
+    */
+
     cout << endl;
 }
 
 /* Prints a linked list of weak_ptrs */
 void LinkedList::print_node_array_weak_ptrs() {
-    cout << copy_node_array[3].weak_node_ptr << endl;
+    cout << copy_node_array[0].weak_node_ptr << endl;
 }
 
 int LinkedList::get_data_at_idx(int idx) {

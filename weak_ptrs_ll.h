@@ -42,7 +42,13 @@ struct LinkedList {
         /* Prints a linked list of shared_ptrs */
         void print_node_list_shared_ptrs();
         /* Prints a linked list of weak_ptrs */
-        void print_node_array_weak_ptrs();
+        void print_node_list_weak_ptrs();
+        // attempts to print node from weak ptr,
+        // returns false if doesn't exist
+        // bool try_print_node_weak_ptr(weak_ptr<Node> &node_wp);
+        // returns true if no weak ptrs were
+        // not able to be locked
+        bool weak_ptrs_all_valid();
 
         int get_data_at_idx(int idx);
         
@@ -53,4 +59,7 @@ struct LinkedList {
         shared_ptr<Node> root;
         vector<CopyNode> copy_node_array;
         int nodeCount;
+
+        bool try_print_node_weak_ptr(weak_ptr<Node> &node_wp);
+        bool weak_ptr_points_to_existing_node(weak_ptr<Node> &node_wp);
 };

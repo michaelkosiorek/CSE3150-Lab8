@@ -30,20 +30,20 @@ void LinkedList::build_node_list(int k) {
 }
 
 void LinkedList::build_copyNodes_weak_ptrs() {
-    vector<CopyNode> copy_nodes;
     CopyNode copy_node_to_add;
     copy_node_to_add.weak_node_ptr = root;
     //rcout << copy_node_to_add.weak_node_ptr << endl;
-    copy_nodes.push_back(copy_node_to_add);
+    copy_node_array.push_back(copy_node_to_add);
     //cout << copy_nodes[0].weak_node_ptr << endl;
 
     shared_ptr<Node> current_node = root->next;
     for (int i=1; i < nodeCount; i++) {
-        copy_node_to_add.weak_node_ptr = root;
-        copy_nodes.push_back(copy_node_to_add);
+        copy_node_to_add.weak_node_ptr = current_node;
+        copy_node_array.push_back(copy_node_to_add);
+        current_node = current_node->next;
     }
 
-    cout << copy_nodes[0].weak_node_ptr << endl;
+    
 }
 
 void LinkedList::delete_node_shared_ptr_list() {
@@ -65,6 +65,7 @@ void LinkedList::delete_node_shared_ptr_list() {
 /* Prints a linked list of shared_ptrs */
 void LinkedList::print_node_list_shared_ptrs() {
     if (nodeCount==0) return;
+    cout << "Shared ptrs data: [";
     shared_ptr<Node> current_node = root;
     cout << root->data << " ";
 
@@ -80,12 +81,17 @@ void LinkedList::print_node_list_shared_ptrs() {
     cout << "Root->next use count:" << root->next.use_count() << endl;
     */
 
-    cout << endl;
+    cout << "]" << endl;
 }
 
 /* Prints a linked list of weak_ptrs */
-void LinkedList::print_node_array_weak_ptrs() {
-    cout << copy_node_array[0].weak_node_ptr << endl;
+void LinkedList::print_node_list_weak_ptrs() {
+    cout << "Weak ptrs data: [";
+    for(auto node : copy_node_array) {
+        try_print_node_weak_ptr(node.weak_node_ptr);
+        cout << " ";
+    }
+    cout << "]" << endl;
 }
 
 int LinkedList::get_data_at_idx(int idx) {
@@ -103,6 +109,33 @@ int LinkedList::get_data_at_idx(int idx) {
     int return_val = current_node->data;
     current_node.reset();
     return return_val;
+}
+
+bool LinkedList::try_print_node_weak_ptr(weak_ptr<LinkedList::Node> &node_wp) {
+    shared_ptr<LinkedList::Node> node_sp = node_wp.lock();
+    if (node_sp) {
+        cout << node_sp->data;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool LinkedList::weak_ptr_points_to_existing_node(weak_ptr<LinkedList::Node> &node_wp) {
+    shared_ptr<LinkedList::Node> node_sp = node_wp.lock();
+    if (node_sp) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool LinkedList::weak_ptrs_all_valid() {
+    for (auto copy_node : copy_node_array) {
+        if (!weak_ptr_points_to_existing_node(copy_node.weak_node_ptr))
+            return false;
+    }
+    return true;
 }
         
 LinkedList::LinkedList() {

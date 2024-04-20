@@ -48,9 +48,15 @@ struct LinkedList {
         // bool try_print_node_weak_ptr(weak_ptr<Node> &node_wp);
         // returns true if no weak ptrs were
         // not able to be locked
+        int get_num_copy_nodes() {return copy_node_array.size();};
+        int try_get_node_weak_ptr_data(weak_ptr<Node> &node_wp);
+        weak_ptr<Node> get_weak_ptr_at_idx(int idx);
         bool weak_ptrs_all_valid();
+        bool any_weak_ptr_valid();
 
         int get_data_at_idx(int idx);
+
+        int get_node_count() {return nodeCount;};
         
         LinkedList();
         ~LinkedList();

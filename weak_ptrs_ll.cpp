@@ -30,6 +30,7 @@ void LinkedList::build_node_list(int k) {
 }
 
 void LinkedList::build_copyNodes_weak_ptrs() {
+    if (nodeCount==0) return;
     CopyNode copy_node_to_add;
     copy_node_to_add.weak_node_ptr = root;
     //rcout << copy_node_to_add.weak_node_ptr << endl;
@@ -42,8 +43,6 @@ void LinkedList::build_copyNodes_weak_ptrs() {
         copy_node_array.push_back(copy_node_to_add);
         current_node = current_node->next;
     }
-
-    
 }
 
 void LinkedList::delete_node_shared_ptr_list() {
@@ -121,6 +120,19 @@ bool LinkedList::try_print_node_weak_ptr(weak_ptr<LinkedList::Node> &node_wp) {
     }
 }
 
+weak_ptr<LinkedList::Node> LinkedList::get_weak_ptr_at_idx(int idx) {
+    return copy_node_array[idx].weak_node_ptr;
+}
+
+int LinkedList::try_get_node_weak_ptr_data(weak_ptr<LinkedList::Node> &node_wp) {
+    shared_ptr<LinkedList::Node> node_sp = node_wp.lock();
+    if (node_sp) {
+        return node_sp->data;
+    } else {
+        return -444;
+    }
+}
+
 bool LinkedList::weak_ptr_points_to_existing_node(weak_ptr<LinkedList::Node> &node_wp) {
     shared_ptr<LinkedList::Node> node_sp = node_wp.lock();
     if (node_sp) {
@@ -136,6 +148,14 @@ bool LinkedList::weak_ptrs_all_valid() {
             return false;
     }
     return true;
+}
+
+bool LinkedList::any_weak_ptr_valid() {
+    for (auto copy_node : copy_node_array) {
+        if (weak_ptr_points_to_existing_node(copy_node.weak_node_ptr))
+            return true;
+    }
+    return false;
 }
         
 LinkedList::LinkedList() {
